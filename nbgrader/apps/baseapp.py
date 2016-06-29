@@ -25,6 +25,8 @@ from traitlets.config.loader import Config
 
 from ..utils import check_directory, parse_utc, find_all_files, full_split, rmtree, remove
 
+from ..writers import NbGraderWriter
+
 
 nbgrader_aliases = {
     'log-level' : 'Application.log_level',
@@ -558,6 +560,7 @@ class BaseNbConvertApp(NbGrader, NbConvertApp):
     notebooks = List([])
     assignments = Dict({})
     writer_class = DottedOrNone('FilesWriter')
+    # writer_class = DottedOrNone(NbGraderWriter)
     output_base = Unicode('')
 
     preprocessors = List([])
