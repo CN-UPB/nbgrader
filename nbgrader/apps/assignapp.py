@@ -15,6 +15,7 @@ from ..preprocessors import (
     SaveCells,
     CheckCellMetadata,
     ClearOutput,
+    RemoveHidden,
 )
 
 aliases = {}
@@ -142,7 +143,8 @@ class AssignApp(BaseNbConvertApp):
         ClearOutput,
         CheckCellMetadata,
         ComputeChecksums,
-        SaveCells
+        SaveCells,
+        RemoveHidden,
     ])
 
     def build_extra_config(self):
