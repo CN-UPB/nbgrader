@@ -26,7 +26,10 @@ from . import (
     SubmitApp,
     ListApp,
     ExtensionApp,
-    QuickStartApp
+    QuickStartApp,
+    StudentMailApp,
+    StudentgradeApp,
+    StudentResultApp
 )
 
 aliases = {}
@@ -189,6 +192,30 @@ class NbGraderApp(NbGrader):
                 """
                 Create an example class files directory with an example
                 config file and assignment.
+                """
+            ).strip()
+        ),
+        studentmail=(
+            StudentMailApp,
+            dedent(
+                """
+                Send mails with results to students
+                """
+            ).strip()
+        ),
+        studentgrade=(
+            StudentgradeApp,
+            dedent(
+                """
+                Connects students identifier with assignments
+                """
+            ).strip()
+        ),
+        studentresult=(
+            StudentResultApp,
+            dedent(
+                """
+                Creates a Python dict with students identifier and their points in assignments.
                 """
             ).strip()
         )
