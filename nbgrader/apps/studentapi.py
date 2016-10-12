@@ -133,12 +133,12 @@ def get_points(sub_notebook_id):
     grades = session.query(Grade).filter(Grade.notebook_id == sub_notebook_id)
     res = 0
     for g in grades:
-        if g.auto_score is None:
-            res += g.manual_score
+        if g.auto_score is None and g.manual_score is None:
+            pass
         elif g.manual_score is None:
             res += g.auto_score
-        elif g.auto_score is None and g.manual_score is None:
-            pass
+        elif g.auto_score is None:
+            res += g.manual_score
         else:
             res += min(g.auto_score, g.manual_score)
     return res
