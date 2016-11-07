@@ -49,7 +49,7 @@ class StudentMailApp(NbGrader):
 
     def send_mail_to(self, adress, groupmember_id, head, message):
         #TODO send mail
-        if adress is not None:
+        if adress is not "":
             print("Send mail", adress, get_student_id(groupmember_id), head,  message)
         else:
             print("None", groupmember_id)
