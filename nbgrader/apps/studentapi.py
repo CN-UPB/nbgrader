@@ -119,11 +119,13 @@ def get_student_id(groupmember_id):
     Returns the Student id for a given groupmember id.
     :param groupmember_id: :attr: ´~nbgrader.api.Groupmember.groupmember_id´ unique id
         of ´~nbgrader.api.Groupmember´
-    :return: :attr: ´~nbgrader.api.SubmittedNotebook.sturdent_id´ unique id
+    :return: :attr: ´~nbgrader.api.SubmittedNotebook.student_id´ unique id
         of ´~nbgrader.api.Student´
     """
-    return session.query(SubmittedNotebook.student_id).filter(
-        SubmittedNotebook.assignment_id == assignment_id).first()[0]
+    assignment_id = session.query(Groupmember.sub_notebook_id).filter(
+        Groupmember.groupmember_id == groupmember_id).first()[0]
+    return session.query(SubmittedAssignment.student_id).filter(
+        SubmittedAssignment.id == assignment_id).first()[0]
 
 
 def get_assignment_list():
