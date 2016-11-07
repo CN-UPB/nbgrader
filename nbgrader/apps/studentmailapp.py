@@ -44,9 +44,12 @@ class StudentMailApp(NbGrader):
         mail = get_student_list_mail()
 
         for p in points:
-            self.send_mail_to(mail[p][self.extra_args[0]], "Matrikel Nr: %s, Punkte in %s: %f" % (
+            self.send_mail_to(mail[p][self.extra_args[0]], p, "Ergebniss %s" % (self.extra_args[0]), "Matrikel Nr: %s, Punkte in %s: %f" % (
                 p, self.extra_args[0], points[p][self.extra_args[0]]))
 
-    def send_mail_to(self, adress, message):
+    def send_mail_to(self, adress, groupmember_id, head, message):
         #TODO send mail
-        print("Send mail", adress, message)
+        if adress is not None:
+            print("Send mail", adress, get_student_id(groupmember_id), head,  message)
+        else:
+            print("None", groupmember_id)

@@ -114,6 +114,18 @@ def get_submitted_nb_id(assignment_id):
         SubmittedNotebook.assignment_id == assignment_id).first()[0]
 
 
+def get_student_id(groupmember_id):
+    """
+    Returns the Student id for a given groupmember id.
+    :param groupmember_id: :attr: ´~nbgrader.api.Groupmember.groupmember_id´ unique id
+        of ´~nbgrader.api.Groupmember´
+    :return: :attr: ´~nbgrader.api.SubmittedNotebook.sturdent_id´ unique id
+        of ´~nbgrader.api.Student´
+    """
+    return session.query(SubmittedNotebook.student_id).filter(
+        SubmittedNotebook.assignment_id == assignment_id).first()[0]
+
+
 def get_assignment_list():
     """
     Returns a list of all assignment names
@@ -183,3 +195,5 @@ def get_student_list_mail():
         res[p.groupmember_id][get_assignment_name(get_assignment_id_from_sub_ass_id(p.sub_notebook_id))] = \
             p.mail
     return res
+
+
