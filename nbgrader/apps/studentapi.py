@@ -114,7 +114,7 @@ def get_submitted_nb_id(assignment_id):
         SubmittedNotebook.assignment_id == assignment_id).first()[0]
 
 
-def get_student_id(groupmember_id):
+def get_student_id(groupmember_id, assignment_name):
     """
     Returns the Student id for a given groupmember id.
     :param groupmember_id: :attr: ´~nbgrader.api.Groupmember.groupmember_id´ unique id
@@ -123,10 +123,15 @@ def get_student_id(groupmember_id):
         of ´~nbgrader.api.Student´
     """
     assignment_id = session.query(Groupmember.sub_notebook_id).filter(
-        Groupmember.groupmember_id == groupmember_id).first()[0]
-    return session.query(SubmittedAssignment.student_id).filter(
-        SubmittedAssignment.id == assignment_id).first()[0]
-
+        Groupmember.groupmember_id == groupmember_id).all()
+    print("Assignment ID:", groupmember_id, assignment_id)
+    for id in assignment_id:
+        name = session.query(Assignment.name).filter(
+            Assignment.id = id).first()[0]
+        if name = assignment_name:
+            return session.query(SubmittedAssignment.student_id).filter(
+                SubmittedAssignment.id == assignment_id).first()[0]
+    return "Kein Assignment"
 
 def get_assignment_list():
     """
