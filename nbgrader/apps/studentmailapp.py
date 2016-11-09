@@ -1,6 +1,7 @@
 from .baseapp import NbGrader
 from .studentapi import *
 import os
+import subprocess
 aliases = {}
 flags = {}
 
@@ -54,9 +55,15 @@ class StudentMailApp(NbGrader):
             self.send_mail_to(d)
 
     def send_mail_to(self, d):
-        d["body"] = "Matrikel Nr: %s, Punkte in %s: %.1f" % (
-            d["matrikelnr"], d["assignment"], d["points"])
-        d["head"] = "Ergebniss %s" % (d["assignment"])
+        d["body"] = """Hallo,
+
+im Anhang befindet sich eine HTML Datei mit Ihrem Ergebniss der Heimübung %s.
+Sie haben %.1f Punkte erreicht.
+
+Bitte anworten Sie nicht auf diese Mail, diese Mail ist automatisch generiert.
+Bei Rückfragen wenden Sie sich bitte an Ihren Tutor oder einen Mitarbeiter.""" % (
+            d["assignment"], d["points"])
+        d["head"] = "Ergebniss %s, GP1" % (d["assignment"])
         d["group"] = get_student_id(d["matrikelnr"], d["assignment"])
         #TODO send mail
         d["html"] = "feedback/%s/%s/%s.html" % (d["group"], d["assignment"], d["assignment"])
@@ -69,6 +76,7 @@ class StudentMailApp(NbGrader):
             if not os.path.exists(d["html"]):
                 print("No HTML File in Group", d["group"])
                 return
-            print("Send mail", d["mail"], d["group"], d["html"], d["head"],  d["body"])
-        else:
-            print("None", d["matrikelnr"])
+            d["command"] = 'echo "%s" | mutt -s "%s" -a %s -- %s' %(d["body"], d["head"], d["html"], d["mail"])
+            command = subprocess.Popen(d["command"], shell=True)
+            command.communicate()
+            #print(d["command"])
