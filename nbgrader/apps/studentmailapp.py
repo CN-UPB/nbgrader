@@ -49,7 +49,7 @@ class StudentMailApp(NbGrader):
             d["assignment"] = assignment_name
             d["mail"] = mail[p][assignment_name]
             d["points"] = round(points[p][assignment_name], 2)
-            d["matriklnr"] = p
+            d["matrikelnr"] = p
             self.send_mail_to(d)
 
     def send_mail_to(self, d):
