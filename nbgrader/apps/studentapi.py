@@ -124,18 +124,19 @@ def get_student_id(groupmember_id, assignment_name):
     """
     assignment_id = session.query(Groupmember.sub_notebook_id).filter(
         Groupmember.groupmember_id == groupmember_id).all()
-    print("Assignment IDs:", groupmember_id, assignment_id)
-    for as_id in assignment_id:
-        as_id = as_id[0]
-        print("  ID: ", as_id)
-        name = session.query(Assignment.name).filter(
-            Assignment.id == as_id).first()
-        print("  Name:", name)
-        name = name[0]
-        if name == assignment_name:
-            return session.query(SubmittedAssignment.student_id).filter(
-                SubmittedAssignment.id == assignment_id).first()[0]
-    return "Kein Assignment"
+    for sub_as_id in assignment_id:
+        try:
+            sub_as_id = sub_as_id[0]
+            as_id = session.query(SubmittedAssignment.assignment_id).filter(
+                SubmittedAssignment.id == sub_as_id).first()[0]
+            name = session.query(Assignment.name).filter(
+                Assignment.id == as_id).first()[0]
+            if name == assignment_name:
+                return session.query(SubmittedAssignment.student_id).filter(
+                    SubmittedAssignment.id == sub_as_id).first()[0]
+        except:
+            pass
+    return None
 
 def get_assignment_list():
     """

@@ -1,5 +1,6 @@
 from .baseapp import NbGrader
 from .studentapi import *
+import os
 aliases = {}
 flags = {}
 
@@ -48,18 +49,26 @@ class StudentMailApp(NbGrader):
             d = dict()
             d["assignment"] = assignment_name
             d["mail"] = mail[p][assignment_name]
-            d["points"] = round(points[p][assignment_name], 2)
+            d["points"] = points[p][assignment_name]
             d["matrikelnr"] = p
             self.send_mail_to(d)
 
     def send_mail_to(self, d):
-        d["body"] = "Matrikel Nr: %s, Punkte in %s: %f" % (
+        d["body"] = "Matrikel Nr: %s, Punkte in %s: %.1f" % (
             d["matrikelnr"], d["assignment"], d["points"])
         d["head"] = "Ergebniss %s" % (d["assignment"])
         d["group"] = get_student_id(d["matrikelnr"], d["assignment"])
         #TODO send mail
-        # html_file =
-        if adress is not "":
-            print("Send mail", d["mail"], d["group"], d["head"],  d["bedy"])
+        d["html"] = "feedback/%s/%s/%s.html" % (d["group"], d["assignment"], d["assignment"])
+
+        # Dies ist nur zu testzwecken vorhanden
+        if d["assignment"] == "SHK_Test":
+            d["html"] = "feedback/%s/%s/%s.html" % (d["group"], d["assignment"], "hueT")
+
+        if d["mail"] is not "" and d["group"] is not None:
+            if not os.path.exists(d["html"]):
+                print("No HTML File in Group", d["group"])
+                return
+            print("Send mail", d["mail"], d["group"], d["html"], d["head"],  d["body"])
         else:
-            print("None", groupmember_id)
+            print("None", d["matrikelnr"])
