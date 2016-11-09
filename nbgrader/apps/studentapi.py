@@ -127,7 +127,7 @@ def get_student_id(groupmember_id, assignment_name):
     print("Assignment ID:", groupmember_id, assignment_id)
     for id in assignment_id:
         name = session.query(Assignment.name).filter(
-            Assignment.id = id).first()[0]
+            Assignment.id == id).first()[0]
         if name == assignment_name:
             return session.query(SubmittedAssignment.student_id).filter(
                 SubmittedAssignment.id == assignment_id).first()[0]
