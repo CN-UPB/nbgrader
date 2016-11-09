@@ -124,9 +124,10 @@ def get_student_id(groupmember_id, assignment_name):
     """
     assignment_id = session.query(Groupmember.sub_notebook_id).filter(
         Groupmember.groupmember_id == groupmember_id).all()
-    print("Assignment ID:", groupmember_id, assignment_id)
+    print("Assignment IDs:", groupmember_id, assignment_id)
     for as_id in assignment_id:
         as_id = as_id[0]
+        print("  ID: ", as_id)
         name = session.query(Assignment.name).filter(
             Assignment.id == as_id).first()[0]
         if name == assignment_name:
