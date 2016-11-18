@@ -74,9 +74,11 @@ class StudentMailApp(NbGrader):
 im Anhang befindet sich eine HTML Datei mit Ihrem Ergebnis der Heimübung %s.
 Sie haben %.1f Punkte erreicht.
 
+Ihre Matrikelnr: %s
+
 Bitte anworten Sie nicht auf diese Mail, sie ist automatisch generiert.
-Bei Rückfragen wenden Sie sich bitte an Ihren Tutor.""" % (
-            d["assignment"], d["points"])
+Bei Rückfragen oder falscher Matrikelnummer wenden Sie sich bitte an Ihren Tutor.""" % (
+            d["assignment"], d["points"], d["matrikelnr"])
         d["head"] = "Ergebnis %s, GP1" % (d["assignment"])
         d["group"] = get_student_id(d["matrikelnr"], d["assignment"])
         #TODO send mail
