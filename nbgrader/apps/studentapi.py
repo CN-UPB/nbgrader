@@ -161,10 +161,8 @@ def get_points(sub_notebook_id):
             pass
         elif g.manual_score is None:
             res += g.auto_score
-        elif g.auto_score is None:
-            res += g.manual_score
         else:
-            res += min(g.auto_score, g.manual_score)
+            res += g.manual_score
     return res
 
 
