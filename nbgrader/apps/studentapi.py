@@ -207,3 +207,28 @@ def get_student_list_mail():
     return res
 
 
+def get_student_list_summery():
+    """
+
+    :return: Return a dict with :attr: ´~nbgrader.apps.studentapi.Groupmember.groupmember_id´ as keys.
+    Values are dicts with :attr: ´~nbgrader.api.Assignment.name´ as keys and values: dict.
+        The keys of inner values are :attr: ´~nbgrader.api.Assignment.name´, values: dict
+            The keys:
+                "mail", value ´~nbgrader.apps.studentapi.Groupmember.email´ for the notebook of that assignment.
+                "point", value ~nbgrader.apps.studentapi.get_points`with param
+                "group", value :attr: ´~nbgrader.apps.api.Student.id´
+    """
+    student_mail_dict = get_student_list_mail()
+    student_point_dict = get_student_list_point()
+    summery_dict = dict()
+    for matrikel in student_mail_dict:
+
+        outer_dict = dict()
+        for assignment in student_mail_dict[matrikel]:
+            inner_dict = {"mail": student_mail_dict[matrikel][assignment],
+                                      "point": student_point_dict[matrikel][assignment],
+                                      "group": get_student_id(matrikel, assignment)}
+            outer_dict[assignment] = inner_dict
+        summery_dict[matrikel] = outer_dict
+    return summery_dict
+

@@ -34,10 +34,23 @@ class StudentResultApp(NbGrader):
 
     def start(self):
         super(StudentResultApp, self).start()
-        print("Results:")
-        students = get_student_list_point()
-        for p in sorted(students):
-            print(p, students[p])
 
+        print('---')
+        print('submit_details:')
+        students = get_student_list_summery()
+        if len(self.extra_args) > 0:
+            tmp_students = dict()
+            for arg in self.extra_args:
+                if arg in students:
+                    tmp_students[arg] = students[arg]
+            students = tmp_students
+        for p in sorted(students):
+            print(' - matrikelnr: ', p, '', sep='')
+            print('   assignments: ')
+            for assignment in sorted(students[p]):
+                print('   - assignment: ', assignment, sep='')
+                for key in students[p][assignment]:
+                    print('     ', key, ': ', students[p][assignment][key], sep='')
+        print('...')
         #TODO return results for all students as JSON
         # (identifier, points_asignment01, points_asignment02, ..., points_sum)
