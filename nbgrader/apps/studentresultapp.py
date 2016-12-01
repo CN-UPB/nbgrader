@@ -45,12 +45,19 @@ class StudentResultApp(NbGrader):
                     tmp_students[arg] = students[arg]
             students = tmp_students
         for p in sorted(students):
-            print(' - matrikelnr: ', p, '', sep='')
+            print(' - matrikelnr: "', p, '"', sep='')
             print('   assignments: ')
             for assignment in sorted(students[p]):
-                print('   - assignment: ', assignment, sep='')
-                for key in students[p][assignment]:
-                    print('     ', key, ': ', students[p][assignment][key], sep='')
+                print('   - assignment: "', assignment, '"', sep='')
+                print('     ', 'point', ': ', students[p][assignment]['point'], sep='')
+                if not students[p][assignment]['group'] is None:
+                    print('     ', 'group', ': "', students[p][assignment]['group'],'"', sep='')
+                else:
+                    print('     ', 'group', ': ', 'None', sep='')#
+                if not students[p][assignment]['mail'] == "":
+                    print('     ', 'mail', ': "', students[p][assignment]['mail'], '"', sep='')
+                else:
+                    print('     ', 'mail', ': ', 'None', sep='')
         print('...')
         #TODO return results for all students as JSON
         # (identifier, points_asignment01, points_asignment02, ..., points_sum)
