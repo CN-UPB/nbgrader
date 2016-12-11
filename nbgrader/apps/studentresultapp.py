@@ -1,6 +1,9 @@
 from .baseapp import NbGrader
 from .studentapi import *
+import yaml
+import sys
 
+        
 aliases = {}
 flags = {}
 
@@ -35,8 +38,6 @@ class StudentResultApp(NbGrader):
     def start(self):
         super(StudentResultApp, self).start()
 
-        print('---')
-        print('submit_details:')
         students = get_student_list_summery()
         if len(self.extra_args) > 0:
             tmp_students = dict()
@@ -44,20 +45,30 @@ class StudentResultApp(NbGrader):
                 if arg in students:
                     tmp_students[arg] = students[arg]
             students = tmp_students
-        for p in sorted(students):
-            print(' - matrikelnr: "', p, '"', sep='')
-            print('   assignments: ')
-            for assignment in sorted(students[p]):
-                print('   - assignment: "', assignment, '"', sep='')
-                print('     ', 'point', ': ', students[p][assignment]['point'], sep='')
-                if not students[p][assignment]['group'] is None:
-                    print('     ', 'group', ': "', students[p][assignment]['group'],'"', sep='')
-                else:
-                    print('     ', 'group', ': ', 'None', sep='')#
-                if not students[p][assignment]['mail'] == "":
-                    print('     ', 'mail', ': "', students[p][assignment]['mail'], '"', sep='')
-                else:
-                    print('     ', 'mail', ': ', 'None', sep='')
-        print('...')
+
+        sys.stderr.write("Dumping {} students\n".format(len(students)))
+        
+        # Old version, trying to create the yaml output manually
+        # print('---')
+        # print('submit_details:')
+        # for p in sorted(students):
+        #     print(' - matrikelnr: "', p, '"', sep='')
+        #     print('   assignments: ')
+        #     for assignment in sorted(students[p]):
+        #         print('   - assignment: "', assignment, '"', sep='')
+        #         print('     ', 'point', ': ', students[p][assignment]['point'], sep='')
+        #         if not students[p][assignment]['group'] is None:
+        #             print('     ', 'group', ': "', students[p][assignment]['group'],'"', sep='')
+        #         else:
+        #             print('     ', 'group', ': ', 'None', sep='')#
+        #         if not students[p][assignment]['mail'] == "":
+        #             print('     ', 'mail', ': "', students[p][assignment]['mail'], '"', sep='')
+        #         else:
+        #             print('     ', 'mail', ': ', 'None', sep='')
+        # print('...')
+
+        # new version: produce yaml via the module:
+        print(yaml.dump(students, default_flow_style=False))
+        
         #TODO return results for all students as JSON
         # (identifier, points_asignment01, points_asignment02, ..., points_sum)
