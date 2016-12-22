@@ -6,6 +6,8 @@ from ..api import SubmittedAssignment
 
 import os
 
+import re
+
 
 
 aliases = {}
@@ -70,14 +72,12 @@ class StudentgradeApp(NbGrader):
         for p in notepath:
             note = json.load(open(p["file"]))
             id_note = note["cells"][0]["source"]
-            for st in id_note:
-                st = str.replace(st, "\n", "")
-                st = str.split(st, " ", 1)
+            for item in self.extract_matrikel_mail(id_note):
                 assignment_id = get_assignment_id(assignment)
-                if len(st) == 2:
-                    self.save_identifier(st[0], p["acc"], assignment_id, st[1])
-                elif len(st) == 1:
-                    self.save_identifier(st[0], p["acc"], assignment_id)
+                if not item[1] is None:
+                    self.save_identifier(item[0], p["acc"], assignment_id, item[1])
+                else:
+                    self.save_identifier(item[0], p["acc"], assignment_id)
         self.session.commit()
         gr = self.session.query(Groupmember).all()
         print("len", len(gr))
@@ -135,4 +135,24 @@ class StudentgradeApp(NbGrader):
                     res += [np]
         return res
 
+    def extract_matrikel_mail(self, id_note):
 
+        # actually new code:
+        def pairwise(l):
+            a = iter(l)
+            return zip(a, a)
+
+        r = []
+
+        for st in id_note:
+            st = st.strip()
+
+            for (matrikel, email) in pairwise(re.split('\s+', st)):
+                if '@' not in email:
+                    email = None
+
+                if matrikel.isnumeric():
+                    tmp_r = (matrikel,  email)
+                    r.append(tmp_r)
+        print(r)
+        return r
