@@ -1,0 +1,15 @@
+---
+mainobject:
+  path: https://gp1test.cs.upb.de:8000/hub/nbgrader/
+  tutors: 
+    -  jonas:
+        email: jo2c5a5r2v2@temp.mailbox.org
+        students:
+          - boerding
+          - mfeldma2
+          - jharbig
+    -  thomas:
+        email: k018kj8dh01@temp.mailbox.org
+        students:
+          - thomask2
+          - jrossel
