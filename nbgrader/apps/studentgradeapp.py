@@ -1,7 +1,7 @@
 import json
 
-from .studentapi import init_database, Groupmember, get_assignment_id
-from ..api import SubmittedAssignment
+from .studentapi import init_database, get_assignment_id
+from ..api import SubmittedAssignment, Groupmember
 
 from .baseapp import (
     NbGrader, nbgrader_aliases, nbgrader_flags)

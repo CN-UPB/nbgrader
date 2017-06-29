@@ -3,11 +3,11 @@
 #TODO: integrate this to nbgrader/api.py ?
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import MetaData, Table
-from ..api import Assignment, SubmittedAssignment, SubmittedNotebook, Grade
+from ..api import Assignment, SubmittedAssignment, SubmittedNotebook, Grade, Groupmember
 
 
 #: superclass for database representation classes
@@ -35,7 +35,7 @@ def init_database(db_url, echo=False):
     #Add table 'groupmember' if not exist
     metadata = MetaData()
     groupemember = Table('groupmember', metadata,
-                         Column('sub_notebook_id', String, primary_key=True),
+                         Column('sub_notebook_id', String, ForeignKey('submitted_assignment.id'), primary_key=True),
                          Column('groupmember_id', String, primary_key=True),
                          Column('mail', String))
     metadata.create_all(engine)
@@ -46,31 +46,6 @@ def init_database(db_url, echo=False):
 
 #TODO manage foreign keys with sqlalchemie
 
-
-class Groupmember(Base):
-    """
-    Database representation of a group member for a submitted assignment
-    """
-    __tablename__ = 'groupmember'
-
-    #: Unique id of :attr:`~nbgrader.api.SubmittedAssignment.id`
-    sub_notebook_id = Column(String, primary_key=True)
-
-    #: Unique identifier for a student (not for
-    #: :attr:`~nbgrader.api.Student.id`, that is just an account
-    #: to login). i.e.: Matrikel Number (german university)
-    #: it is used to connect all submitted assignments from that
-    #: student to that student. a groupmember id can just be connected
-    #: to one submission each assignment
-    groupmember_id = Column(String, primary_key=True)
-
-    #: an email address for a result email for that assignment.
-    #: can change for one student each assignment
-    mail = Column(String)
-
-    def __repr__(self):
-        return "<Groupmember(identifier='%s', notebook=%s, mail='%s')>" \
-               % (self.groupmember_id, self.sub_notebook_id, self.mail)
 
 
 def get_assignment_id(assignment_name):

@@ -396,6 +396,10 @@ class SubmittedAssignment(Base):
     #: :class:`~nbgrader.api.Student` object
     student = None
 
+    #: A collection of groupmembers submitted that assignment, represented as
+    #: :class:`~nbgrader.api.Groupmember` objects
+    submissions = relationship("Groupmember", backref="sub_notebook")
+
     #: Unique id of :attr:`~nbgrader.api.SubmittedAssignment.student`
     student_id = Column(String(128), ForeignKey('student.id'))
 
@@ -777,6 +781,36 @@ class Comment(Base):
     def __repr__(self):
         return "Comment<{}/{}/{} for {}>".format(
             self.assignment.name, self.notebook.name, self.name, self.student.id)
+
+
+class Groupmember(Base):
+    """
+    Database representation of a group member for a submitted assignment
+    """
+    __tablename__ = 'groupmember'
+
+    #: Unique id of :attr:`~nbgrader.api.SubmittedAssignment.id`
+    sub_notebook_id = Column(String, ForeignKey('submitted_assignment.id'), primary_key=True)
+
+    #: The submitted assignment of that entry, represented by a
+    #: :class:`~nbgrader.api.Student` object
+    sub_notebook = None
+
+    #: Unique identifier for a student (not for
+    #: :attr:`~nbgrader.api.Student.id`, that is just an account
+    #: to login). i.e.: Matrikel Number (german university)
+    #: it is used to connect all submitted assignments from that
+    #: student to that student. a groupmember id can just be connected
+    #: to one submission each assignment
+    groupmember_id = Column(String, primary_key=True)
+
+    #: an email address for a result email for that assignment.
+    #: can change for one student each assignment
+    mail = Column(String)
+
+    def __repr__(self):
+        return "<Groupmember(identifier='%s', notebook=%s, mail='%s')>" \
+               % (self.groupmember_id, self.sub_notebook_id, self.mail)
 
 
 ## Needs manual grade
