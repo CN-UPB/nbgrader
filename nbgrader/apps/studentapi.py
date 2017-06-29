@@ -18,7 +18,7 @@ db_url = 'sqlite:///gradebook.db'
 session = None
 
 
-def init_database(db_url=db_url, echo=False):
+def init_database(db_url, echo=False):
     global session
     """
     Initialise the database:
@@ -41,7 +41,7 @@ def init_database(db_url=db_url, echo=False):
     metadata.create_all(engine)
     return session
 
-init_database()
+#init_database()
 
 
 #TODO manage foreign keys with sqlalchemie
