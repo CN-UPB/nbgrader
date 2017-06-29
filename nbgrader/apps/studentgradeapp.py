@@ -1,8 +1,10 @@
-from .baseapp import NbGrader
 import json
 
 from .studentapi import init_database, Groupmember, get_assignment_id
 from ..api import SubmittedAssignment
+
+from .baseapp import (
+    NbGrader, nbgrader_aliases, nbgrader_flags)
 
 import os
 
@@ -11,7 +13,9 @@ import re
 
 
 aliases = {}
+aliases.update(nbgrader_aliases)
 flags = {}
+flags.update(nbgrader_flags)
 
 
 class StudentgradeApp(NbGrader):
@@ -64,9 +68,11 @@ class StudentgradeApp(NbGrader):
 
         if len(self.extra_args) != 1:
             self.fail("Assignment id not provided. Usage: nbgrader studentgrade assinment_id")
-        self.session = init_database(db_url='sqlite:///gradebook.db')
+        #self.session = init_database(db_url='sqlite:///gradebook.db')
+        print(self.db_url)
+        self.session = init_database(db_url=self.db_url)
         assignment = self.extra_args[0]
-        rootpath = './autograded'
+        rootpath = os.path.join(self.course_directory, "autograded")
         notepath = self.get_notepath(assignment, rootpath)
         #print("notepath", notepath)
         for p in notepath:
