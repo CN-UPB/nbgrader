@@ -1,14 +1,17 @@
 ---
 mainobject:
+  balance: -1
   path: https://gp1test.cs.upb.de:8000/hub/nbgrader/
   tutors: 
     -  jonas:
+        work: 100
         email: jo2c5a5r2v2@temp.mailbox.org
         students:
           - boerding
           - mfeldma2
           - jharbig
     -  thomas:
+        work: 100
         email: k018kj8dh01@temp.mailbox.org
         students:
           - thomask2

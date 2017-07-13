@@ -36,6 +36,7 @@ class TestNbGraderStudentgrade(BaseTestApp):
         """Is the help displayed when no course id is given?"""
         run_nbgrader(["gradinglinks"], retcode=1)
 
+#TODO: automate test for output
     def test_in_example_db(self, course_dir):
         """Is the table 'groupmembers' created and the first entry done in an empty default database"""
         self._copy_file(join("files", "generate_links_test.yaml"), join(course_dir, "tutors.ipynb"))
@@ -45,6 +46,7 @@ class TestNbGraderStudentgrade(BaseTestApp):
               "https://gp1test.cs.upb.de:8000/hub/nbgrader/gp1test/submissions/01036da386544236a2971a2564c4d802",
               "and two other links", end="#################################\n", sep=\n)
         run_nbgrader(["gradinglinks", "SHK_Test", "jonas", "--course-dir", course_dir])
+
         print("Output should be:",
               "https://gp1test.cs.upb.de:8000/hub/nbgrader/gp1test/submissions/7e281d1bc7fd4da1854670a1ac48bfd5",
               "and one other link", end="#################################\n", sep=\n)
