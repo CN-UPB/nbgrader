@@ -92,11 +92,13 @@ Bei Rückfragen oder falscher Matrikelnummer wenden Sie sich bitte an Ihren Tuto
         d["head"] = "Ergebnis %s, GP1" % (d["assignment"])
         d["group"] = get_student_id(d["matrikelnr"], d["assignment"])
         #TODO send mail
-        d["html"] = os.path.join(self.course_directory, "feedback/%s/%s/%s.html" % (d["group"], d["assignment"], d["assignment"]))
+        d["dir"] = os.path.join(self.course_directory, "feedback/%s/%s" % (d["group"], d["assignment"]))
 
         # Dies ist nur zu testzwecken vorhanden
-        if d["assignment"] == "SHK_Test":
-            d["html"] = "feedback/%s/%s/%s.html" % (d["group"], d["assignment"], "hueT")
+        d["html"] = ""
+        for file in os.listdir(d["dir"]):
+            if file.endswith(".html"):
+                d["html"] += " -a " + os.path.join(d["dir"], file)
 
         if d["group"] is not None and d["group"] not in self.sendet_mails:
             self.sendet_mails.add(d["group"])
@@ -107,12 +109,10 @@ Bei Rückfragen oder falscher Matrikelnummer wenden Sie sich bitte an Ihren Tuto
             if test:
                 return
 
-            d["command"] = 'echo "%s" | mutt -s "%s" -a %s -- %s' %(d["body"], d["head"], d["html"], d["group"] + "@mail.upb.de")
+            d["command"] = 'echo "%s" | mutt -s "%s" %s -- %s' %(d["body"], d["head"], d["html"], d["group"] + "@mail.upb.de")
 #TODO Aussreichende Test noch nicht gemacht (kein test server vorhanden)
 #TODO es wird und nur eine Matrikelnummer (ueber race condition entschieden, welche) angegeben. Am besten werden
     # alle angegeben, damit die Studenten wissen, dass in der Abgabe alle korrekt geklappt hat
-#TODO der Pfad fuer die HTML ist hard gecodet (vermutlich fuer das kommende semester Falsch).
-            # Optimalerweise sollten alle HTMLs in dem Ordner verschickt werden.
 
             command = subprocess.Popen(d["command"], shell=True)
             command.communicate()
