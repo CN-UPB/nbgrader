@@ -112,7 +112,8 @@ Bei Rückfragen oder falscher Matrikelnummer wenden Sie sich bitte an Ihren Tuto
             d["command"] = 'echo "%s" | mutt -s "%s" %s -- %s' %(d["body"], d["head"], d["html"], d["group"] + "@mail.upb.de")
 #TODO Aussreichende Test noch nicht gemacht (kein test server vorhanden)
 #TODO es wird und nur eine Matrikelnummer (ueber race condition entschieden, welche) angegeben. Am besten werden
-    # alle angegeben, damit die Studenten wissen, dass in der Abgabe alle korrekt geklappt hat
+    # alle angegeben, damit die Studenten wissen, dass in der Abgabe alles korrekt geklappt hat
+    # einfachste Loesung dafuer: Zeile 104 auskommentieren. Dann wird fuer jede Matrikelnummer eine eigene Mail gesendet
 
             command = subprocess.Popen(d["command"], shell=True)
             command.communicate()
