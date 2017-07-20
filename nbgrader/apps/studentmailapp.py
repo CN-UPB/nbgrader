@@ -102,7 +102,7 @@ Bei Rückfragen oder falscher Matrikelnummer wenden Sie sich bitte an Ihren Tuto
 
         if d["group"] is not None and d["group"] not in self.sendet_mails:
             self.sendet_mails.add(d["group"])
-            if not os.path.exists(d["html"]):
+            if d["html"] == "":
                 print("No HTML File in Group", d["group"])
                 return
             self.log.info("%s MtNr:%s Group:%s Mail: %s Point:%.1f" % ("[not send]" if test else "[send]", d["matrikelnr"], d["group"], d["group"] + "@mail.upb.de", d["points"]))
