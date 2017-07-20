@@ -95,6 +95,7 @@ Bei Rückfragen oder falscher Matrikelnummer wenden Sie sich bitte an Ihren Tuto
             self.log.info("%s MtNr:%s Group:%s Mail: %s Point:%.1f" % ("[not send]" if test else "[send]", d["matrikelnr"], d["group"], d["mail"], d["points"]))
             if test:
                 return
+#TODO Mailadresse ueber Benutzername (command injection moeglich)
             d["command"] = 'echo "%s" | mutt -s "%s" -a %s -- %s' %(d["body"], d["head"], d["html"], d["mail"])
             command = subprocess.Popen(d["command"], shell=True)
             command.communicate()
