@@ -38,7 +38,7 @@ class TestNbGraderStudentgrade(BaseTestApp):
 
     def test_in_default_db(self, course_dir):
         """Is the table 'groupmembers' created and the first entry done in an empty default database"""
-        self._copy_file(join("files", "studentgradetest.ipynb"), join(course_dir, "autograded", "onlytest", "ps1", "problem1.ipynb"))
+        self._copy_file(join("files", "studentgrade.ipynb"), join(course_dir, "autograded", "onlytest", "ps1", "matrikelnummer.ipynb"))
         self._copy_file(join("files", "studentgradetest.db"), join(course_dir, "gradebook.db"))
         #run_nbgrader(["studentgrade", "ps1", "--db", "sqlite:///" + join(course_dir, "gradebook.db")])
         run_nbgrader(["studentgrade", "ps1", "--course-dir", course_dir])

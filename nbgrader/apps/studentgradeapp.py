@@ -28,35 +28,26 @@ class StudentgradeApp(NbGrader):
 
     examples = """
         Studentgrade connects the submitted assignments to the students that worked in a group.
-        Each group has one group account. They must write the identifier and mail addresses in
-        the first notebook cell.
+        Each group has one group account. They must write the matrikelnumber in
+        an additional notebook named 'matrikelnummer.ipynb'
 
         You can run `nbgrader studentgrade` just in the top-level course folder.
         This command must be run after ´nbgrader autograde assignment01´.
 
-        To connect the students identifier (written by the students in the first cell of the
-        collected notebook with syntax:
-
-            identifier1 student1@mail.de
-            identifier2 student2@mail.de
-                .
-                .
-                .
-
-        ) for their submissions on asignment01 run:
+        To connect the students identifier for their submissions on asignment01 run:
 
             nbgrader studentgrade asignment01
 
-        This also saves the mailadress to the datebase for mailing the results with
-        nbgrader studentmail
+        In the 'matrikelnummer.ipynb' notebook the matrikelnumbers bust be in cell two an following
+        (in the first cell may be some instruction for students). Not more than 'StudendgradeApp.MAX_MATRIKEL_NUMBERS'
+        matrikelnumbers in each assignment. If more matrikelnumbers are given, the fist ones will be saved.
 
-        If the syntax is not correct in one line, the other lines will not be effected.
+        If the syntax is not correct in one cell, the other cells will not be effected.
         If there is no correct line, this call will not do anything.
-        If there is no mailadress, the identifier will still be saved.
-        The identifier must only contain letters, numbers and underscores. No spaces or
-        other special signs.
-
+        The matrikelnumber must only contain numbers. No letters, spaces or other signs.
         """
+
+    MAX_MATRIKEL_NUMBERS = 4
 
     def _classes_default(self):
         classes = super(StudentgradeApp, self)._classes_default()
@@ -77,7 +68,8 @@ class StudentgradeApp(NbGrader):
         #print("notepath", notepath)
         for p in notepath:
             note = json.load(open(p["file"]))
-            id_note = note["cells"][0]["source"]
+            #id_note = note["cells"][0]["source"]
+            id_note = note["cells"][1:1 + self.MAX_MATRIKEL_NUMBERS]
             for item in self.extract_matrikel_mail(id_note):
                 assignment_id = get_assignment_id(assignment)
                 if not item[1] is None:
@@ -132,33 +124,21 @@ class StudentgradeApp(NbGrader):
                 np['acc'] = p
                 assignment_dir = os.path.join(root_path, p, assignment)
                 #print("assignment_dir", assignment_dir)
-                if os.path.exists(assignment_dir):
-                    for f in os.listdir(assignment_dir):
-                        if f.rfind('.ipynb') != -1:
-                            np['file'] = os.path.join(assignment_dir, f)
-                            break
-                    #print("notepath np:", np)
+                if os.path.exists(os.path.join(assignment_dir, "matrikelnummer.ipynb")):
+                    np['file'] = os.path.join(assignment_dir, "matrikelnummer.ipynb")
                     res += [np]
         return res
 
     def extract_matrikel_mail(self, id_note):
-
-        # actually new code:
-        def pairwise(l):
-            a = iter(l)
-            return zip(a, a)
-
         r = []
+        # actually new code:
+        for i in id_note:
+            matrikel = i["source"][0]
 
-        for st in id_note:
-            st = st.strip()
+            email = None
 
-            for (matrikel, email) in pairwise(re.split('\s+', st)):
-                if '@' not in email:
-                    email = None
-
-                if matrikel.isnumeric():
-                    tmp_r = (matrikel,  email)
-                    r.append(tmp_r)
+            if matrikel.isnumeric():
+                tmp_r = (matrikel,  email)
+                r.append(tmp_r)
         print(r)
         return r
