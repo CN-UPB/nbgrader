@@ -1,4 +1,5 @@
 import json
+import yaml
 
 from .studentapi import init_database, get_assignment_id
 from ..api import SubmittedAssignment, Groupmember
@@ -7,14 +8,59 @@ from .baseapp import (
     NbGrader, nbgrader_aliases, nbgrader_flags)
 
 import os
+import random
 
 import re
+
+from traitlets import Unicode, Bool
+from textwrap import dedent
 
 
 aliases = {'tutor-file': 'GradelinksApp.tutor_file'}
 aliases.update(nbgrader_aliases)
-flags = {}
+flags = {
+    'group-by-students': ({'GradelinksApp': {'group_by_students': True}},
+            "Group results by students in stead of grouping by tutors."),
+}
 flags.update(nbgrader_flags)
+
+
+class Student:
+    def init_random(self):
+        random.seed(self.name + self.assignment_id)
+
+    def __init__(self, name, assignment_id):
+        self.name = name
+        self.assignment_id = assignment_id
+        self.init_random()
+        self.offset = random.random
+
+    def sorting_number(self):
+        return self.offset
+
+
+class Tutor(Student):
+    def __init__(self, name, assignment_id, work_number, students=[]):
+        super().__init__(name, assignment_id)
+        self.students = students
+        self.work_number = work_number
+
+    def sorting_number(self):
+        return len(self.students) * 100 / self.work_number + self.offset
+
+    def max_students(self, max_students):
+        return round(max_students * self.work_number / 100)
+
+    def get_odd_students(self, max_students):
+        students = self.students[:]
+        students = students.sort(key=lambda student: student.sorting_number)
+        if len(students) > self.max_students(max_students):
+            self.students = students[0:self.max_students(max_students)]
+            return students[self.max_students(max_students):]
+        return []
+
+    def add_students(self, students):
+        self.students = self.students + students
 
 
 class GradelinksApp(NbGrader):
@@ -77,7 +123,8 @@ class GradelinksApp(NbGrader):
             `balance: -1` use for no allocation.
             `balance: 0` is recommended for fair allocation.
             `balance` > [number of all students] (maybe 7,000,000,000) use for only allocate students without tutor.
-            `work` should be analogous to payed working hours of that tutor.
+            `work` should be analogous to payed or intended working hours of that tutor.
+        Path is the prefix of all Notebooks in the Formgrader.
 
         Submitted Notebooks are default group by sub assignments. To change use flag -group-by-student
 
@@ -95,6 +142,14 @@ class GradelinksApp(NbGrader):
             """
         )
     )
+
+    def _tutor_file_default(self):
+        return os.path.join(self.course_directory, "tutor.yaml")
+
+    group_by_students = Bool(False, config=True,
+        help="""Group results by students in stead of grouping by tutors."""
+    )
+
     def _classes_default(self):
         classes = super(GradelinksApp, self)._classes_default()
         classes.append(GradelinksApp)
@@ -111,6 +166,8 @@ class GradelinksApp(NbGrader):
             tutor = 'all'
         else:
             tutor = self.extra_args[1]
+
+        self.init_tutors(self.tutor_file, assignment)
         rootpath = os.path.join(self.course_directory, "autograded")
         notepath = self.get_notepath(assignment, rootpath)
         #print("notepath", notepath)
@@ -129,3 +186,9 @@ class GradelinksApp(NbGrader):
         for g in self.session.query(Groupmember).all():
             print("saved ids", g)
 
+    def init_tutors(self, path, assignment):
+        with open(path) as yaml_file:
+            tutor_doc = yaml.load(yaml_file)
+        balance = float(tutor_doc['mainobject']['balance'])
+        path = tutor_doc['mainobject']['path']
+        for t in tutor_doc['mainobject']['tutors']

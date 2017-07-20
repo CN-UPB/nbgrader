@@ -15,6 +15,7 @@ from .quickstartapp import QuickStartApp
 from .studentmailapp import StudentMailApp
 from .studentgradeapp import StudentgradeApp
 from .studentresultapp import StudentResultApp
+from .gradelinksapp import GradelinksApp
 from .nbgraderapp import NbGraderApp
 
 
@@ -26,6 +27,7 @@ __all__ = [
     'FeedbackApp',
     'FormgradeApp',
     'FormgradeNotebookApp',
+    'GradelinksApp'
     'ValidateApp',
     'ReleaseApp',
     'CollectApp',
