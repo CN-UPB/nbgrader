@@ -2,8 +2,14 @@ from .baseapp import NbGrader
 from .studentapi import *
 import os
 import subprocess
+
+from .baseapp import (
+    NbGrader, nbgrader_aliases, nbgrader_flags)
+
 aliases = {}
+aliases.update(nbgrader_aliases)
 flags = {}
+flags.update(nbgrader_flags)
 
 
 class StudentMailApp(NbGrader):
@@ -68,6 +74,10 @@ class StudentMailApp(NbGrader):
             d["matrikelnr"] = p
             self.send_mail_to(d, test)
 
+    #zur vermeidung doppelter mails (ansonsten wuede fuer jede Matrikelnummer der Abgabe eine Mail an die gleiche
+    #Adresse gesendet werden
+    sendet_mails = set()
+
     def send_mail_to(self, d, test=False):
         d["body"] = """Hallo,
 
@@ -82,21 +92,28 @@ Bei Rückfragen oder falscher Matrikelnummer wenden Sie sich bitte an Ihren Tuto
         d["head"] = "Ergebnis %s, GP1" % (d["assignment"])
         d["group"] = get_student_id(d["matrikelnr"], d["assignment"])
         #TODO send mail
-        d["html"] = "feedback/%s/%s/%s.html" % (d["group"], d["assignment"], d["assignment"])
+        d["html"] = os.path.join(self.course_directory, "feedback/%s/%s/%s.html" % (d["group"], d["assignment"], d["assignment"]))
 
         # Dies ist nur zu testzwecken vorhanden
         if d["assignment"] == "SHK_Test":
             d["html"] = "feedback/%s/%s/%s.html" % (d["group"], d["assignment"], "hueT")
 
-        if d["mail"] is not "" and d["group"] is not None:
+        if d["group"] is not None and d["group"] not in self.sendet_mails:
+            self.sendet_mails.add(d["group"])
             if not os.path.exists(d["html"]):
                 print("No HTML File in Group", d["group"])
                 return
-            self.log.info("%s MtNr:%s Group:%s Mail: %s Point:%.1f" % ("[not send]" if test else "[send]", d["matrikelnr"], d["group"], d["mail"], d["points"]))
+            self.log.info("%s MtNr:%s Group:%s Mail: %s Point:%.1f" % ("[not send]" if test else "[send]", d["matrikelnr"], d["group"], d["group"] + "@mail.upb.de", d["points"]))
             if test:
                 return
-#TODO Mailadresse ueber Benutzername (command injection moeglich)
-            d["command"] = 'echo "%s" | mutt -s "%s" -a %s -- %s' %(d["body"], d["head"], d["html"], d["mail"])
+
+            d["command"] = 'echo "%s" | mutt -s "%s" -a %s -- %s' %(d["body"], d["head"], d["html"], d["group"] + "@mail.upb.de")
+#TODO Aussreichende Test noch nicht gemacht (kein test server vorhanden)
+#TODO es wird und nur eine Matrikelnummer (ueber race condition entschieden, welche) angegeben. Am besten werden
+    # alle angegeben, damit die Studenten wissen, dass in der Abgabe alle korrekt geklappt hat
+#TODO der Pfad fuer die HTML ist hard gecodet (vermutlich fuer das kommende semester Falsch).
+            # Optimalerweise sollten alle HTMLs in dem Ordner verschickt werden.
+
             command = subprocess.Popen(d["command"], shell=True)
             command.communicate()
-            #print(d["command"])
+            print(d["command"])
