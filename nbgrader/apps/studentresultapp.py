@@ -8,6 +8,17 @@ aliases = {}
 flags = {}
 
 
+#TODO Bitte ausprobieren und eventuell aendern:
+# Ich bin mir nicht sicher, worauf genau die in der Datenbank Tabellen 'Groupmember' gespeicherte
+# submitted_notebook_id verweist. moeglicherweise verwendet studentresult fuer die Berechnung der Punkte lediglich
+# das eine Notebook, auf das verweisen wird, und nicht alle Notebooks, die fuer das Assignment abgegeben wurden. In
+# dem Fall wird das das Notebook 'matrikelnummer.ipynb' sein und es muss noch geaedert werden, dass alle Notebooks
+# des Assignments fuer die Berechnung der Punkte genutzt werden.
+
+
+
+
+
 class StudentResultApp(NbGrader):
 
     name = u'nbgrader-studentmail'
