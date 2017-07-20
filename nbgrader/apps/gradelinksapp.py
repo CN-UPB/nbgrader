@@ -131,7 +131,7 @@ class GradelinksApp(NbGrader):
 
 
         """
-
+'''
     tutor_file = Unicode(
         '',
         config=True,
@@ -176,3 +176,4 @@ class GradelinksApp(NbGrader):
         balance = float(tutor_doc['mainobject']['balance'])
         path = tutor_doc['mainobject']['path']
         for t in tutor_doc['mainobject']['tutors']
+'''

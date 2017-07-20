@@ -1,3 +1,4 @@
+'''
 import os
 import sys
 
@@ -72,3 +73,4 @@ class TestNbGraderStudentgrade(BaseTestApp):
 
 
 # Will generate two links for two notebooks and group by notebooks\
+'''
