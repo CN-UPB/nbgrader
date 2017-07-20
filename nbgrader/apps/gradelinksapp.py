@@ -168,23 +168,7 @@ class GradelinksApp(NbGrader):
             tutor = self.extra_args[1]
 
         self.init_tutors(self.tutor_file, assignment)
-        rootpath = os.path.join(self.course_directory, "autograded")
-        notepath = self.get_notepath(assignment, rootpath)
-        #print("notepath", notepath)
-        for p in notepath:
-            note = json.load(open(p["file"]))
-            id_note = note["cells"][0]["source"]
-            for item in self.extract_matrikel_mail(id_note):
-                assignment_id = get_assignment_id(assignment)
-                if not item[1] is None:
-                    self.save_identifier(item[0], p["acc"], assignment_id, item[1])
-                else:
-                    self.save_identifier(item[0], p["acc"], assignment_id)
-        self.session.commit()
-        gr = self.session.query(Groupmember).all()
-        print("len", len(gr))
-        for g in self.session.query(Groupmember).all():
-            print("saved ids", g)
+#TODO is not ready to use, here is many missing (see doc)
 
     def init_tutors(self, path, assignment):
         with open(path) as yaml_file:
