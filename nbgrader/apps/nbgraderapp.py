@@ -219,14 +219,14 @@ class NbGraderApp(NbGrader):
                 Creates a Python dict with students identifier and their points in assignments.
                 """
             ).strip()
-        ),
-        gradelinks=(
-            GradelinksApp,
-            dedent(
-                """
-                Returns a list of Links to Notebooks in Formgrader for a tutor to correct.
-                """
-            ).strip()
+#        ),
+#        gradelinks=(
+#            GradelinksApp,
+#            dedent(
+#                """
+#                Returns a list of Links to Notebooks in Formgrader for a tutor to correct.
+#                """
+#            ).strip()
         )
     )
 

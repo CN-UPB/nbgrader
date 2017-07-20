@@ -27,7 +27,7 @@ __all__ = [
     'FeedbackApp',
     'FormgradeApp',
     'FormgradeNotebookApp',
-    'GradelinksApp'
+    'Gradelink'
     'ValidateApp',
     'ReleaseApp',
     'CollectApp',
